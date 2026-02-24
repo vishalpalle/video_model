@@ -1,0 +1,10 @@
+ultralytics
+supervision
+opencv-python
+torch
+transformers
+accelerate
+pillow
+requests
+tqdm
+numpy
