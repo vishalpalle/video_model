@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 from ultralytics import YOLO
 
-from utils.logger import get_logger
+from video_pipeline.utils.logger import get_logger
 
 
 @dataclass(slots=True)
@@ -23,10 +23,11 @@ class FramePacket:
 class MultiStreamDetector:
     """Run YOLOv8x inference in batch for multiple streams."""
 
-    def __init__(self, model_name: str, device: str, use_fp16: bool = True) -> None:
+    def __init__(self, model_name: str, device: str, batch_size: int = 8, use_fp16: bool = True) -> None:
         self.logger = get_logger()
         self.device = device
         self.use_fp16 = use_fp16 and device == "cuda"
+        self.batch_size = batch_size
         try:
             self.model = YOLO(model_name)
             self.logger.info("Loaded detector model %s on %s", model_name, device)
@@ -44,6 +45,7 @@ class MultiStreamDetector:
             device=self.device,
             half=self.use_fp16,
             verbose=False,
+            batch=self.batch_size,
         )
 
         payload: list[dict[str, Any]] = []

@@ -5,10 +5,10 @@ from __future__ import annotations
 import argparse
 import asyncio
 
-from config import PipelineConfig
-from core.stream_manager import StreamManager
-from utils.device import configure_torch_backends
-from utils.logger import get_logger
+from video_pipeline.config import PipelineConfig
+from video_pipeline.core.stream_manager import StreamManager
+from video_pipeline.utils.device import configure_torch_backends
+from video_pipeline.utils.logger import get_logger
 
 
 def parse_args() -> argparse.Namespace:

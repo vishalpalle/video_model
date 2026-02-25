@@ -7,7 +7,7 @@ from typing import Any
 import numpy as np
 from paddleocr import PaddleOCR
 
-from utils.logger import get_logger
+from video_pipeline.utils.logger import get_logger
 
 
 class TelemetryOCR:

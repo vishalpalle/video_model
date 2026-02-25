@@ -8,8 +8,8 @@ from typing import Any
 import torch
 from transformers import AutoModelForVision2Seq, AutoProcessor
 
-from utils.device import clear_device_cache
-from utils.logger import get_logger
+from video_pipeline.utils.device import clear_device_cache
+from video_pipeline.utils.logger import get_logger
 
 
 class QwenReasoningEngine:
@@ -33,10 +33,15 @@ class QwenReasoningEngine:
 
     def _run_once(self, prompt: str) -> str:
         inputs = self.processor(text=[prompt], return_tensors="pt")
+        input_ids = inputs.get("input_ids")
+        prompt_length = int(input_ids.shape[-1]) if input_ids is not None else 0
+
         inputs = {k: v.to(self.model.device) if hasattr(v, "to") else v for k, v in inputs.items()}
         with torch.no_grad():
             out = self.model.generate(**inputs, max_new_tokens=self.max_new_tokens)
-        text = self.processor.batch_decode(out, skip_special_tokens=True)[0]
+
+        generated_tokens = out[:, prompt_length:] if prompt_length > 0 else out
+        text = self.processor.batch_decode(generated_tokens, skip_special_tokens=True)[0]
         return text
 
     def infer(self, prompt: str) -> dict[str, Any]:

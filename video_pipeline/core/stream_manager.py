@@ -13,15 +13,15 @@ from typing import Any
 import cv2
 from tqdm import tqdm
 
-from config import PipelineConfig
-from core.event_manager import EventManager
-from core.state_manager import StateManager
-from detection.detector import FramePacket, MultiStreamDetector
-from detection.ocr import TelemetryOCR
-from detection.tracker import StreamTrackerRegistry
-from reasoning.prompt_builder import build_reasoning_prompt
-from reasoning.qwen_engine import QwenReasoningEngine
-from utils.logger import get_logger
+from video_pipeline.config import PipelineConfig
+from video_pipeline.core.event_manager import EventManager
+from video_pipeline.core.state_manager import StateManager
+from video_pipeline.detection.detector import FramePacket, MultiStreamDetector
+from video_pipeline.detection.ocr import TelemetryOCR
+from video_pipeline.detection.tracker import StreamTrackerRegistry
+from video_pipeline.reasoning.prompt_builder import build_reasoning_prompt
+from video_pipeline.reasoning.qwen_engine import QwenReasoningEngine
+from video_pipeline.utils.logger import get_logger
 
 
 @dataclass(slots=True)
@@ -45,7 +45,12 @@ class StreamManager:
         self.stop_event = asyncio.Event()
         self.state = StateManager(window_size=config.sliding_window_size)
         self.events = EventManager(event_threshold_seconds=config.event_threshold_seconds)
-        self.detector = MultiStreamDetector(config.yolo_model_name, config.device, use_fp16=True)
+        self.detector = MultiStreamDetector(
+            config.yolo_model_name,
+            config.device,
+            batch_size=config.batch_size,
+            use_fp16=True,
+        )
         self.trackers = StreamTrackerRegistry()
         self.ocr = TelemetryOCR(confidence_threshold=config.telemetry_confidence_threshold)
         self.reasoner = QwenReasoningEngine(

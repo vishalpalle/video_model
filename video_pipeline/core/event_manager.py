@@ -6,7 +6,7 @@ import math
 import time
 from typing import Any
 
-from core.state_manager import StreamState
+from video_pipeline.core.state_manager import StreamState
 
 
 class EventManager:
