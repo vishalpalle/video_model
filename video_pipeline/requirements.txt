@@ -1,0 +1,9 @@
+ultralytics
+supervision
+paddleocr
+opencv-python
+torch
+transformers
+accelerate
+tqdm
+numpy
