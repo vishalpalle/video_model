@@ -9,3 +9,6 @@ pillow
 requests
 tqdm
 numpy
+
+fastapi
+uvicorn[standard]
